@@ -35,7 +35,7 @@ const fetchCoordsByIP = function(ip, callback) {
       const msg = `Status Code ${response.statusCode} when fetching coordinates.Response: ${body}`;
       return callback(Error(msg), null);
     }
-    
+
     // Parse the returned body so we can check its information
     // No need for JSON.parse if body is already an object
     const parsedBody = typeof body === 'string' ? JSON.parse(body) : body;
@@ -46,10 +46,8 @@ const fetchCoordsByIP = function(ip, callback) {
       return callback(Error(message), null);
     }
 
-
-
-    const latitude = body.latitude;
-    const longitude = body.longitude;
+    const latitude = parsedBody.latitude;
+    const longitude = parsedBody.longitude;
     callback(null, {latitude, longitude});
   });
 };
