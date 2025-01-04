@@ -28,13 +28,24 @@ const needle = require('needle');
 const fetchCoordsByIP = function(ip, callback) {
   const url = `http://ipwho.is/${ip}`;
   needle.get(url, (error, response, body) => {
+    // Error handling in case of invalid domain or offline user, etc
     if (error) return callback(error, null);
+
+    // Parse the returned body so we can check its information
+    // No need for JSON.parse if body is already an object
+    const parsedBody = typeof body === 'string' ? JSON.parse(body) : body;
+
+    // check if response was not successful in API terms
+    if (!parsedBody.success) {
+      const message = `Success status was ${parsedBody.success}. Server message says: ${parsedBody.message} when fetching for IP ${parsedBody.ip}`;
+      return callback(Error(message), null);
+    }
 
     if (response.statusCode !== 200) {
       const msg = `Status Code ${response.statusCode} when fetching coordinates.Response: ${body}`;
       return callback(Error(msg), null);
     }
-    
+
     if (!body.success) {
       const message = `Success status was ${body.success}. Server message says: ${body.message} when fetching for IP ${body.ip}`;
       return callback(Error(message), null);
