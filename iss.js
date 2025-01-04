@@ -1,3 +1,5 @@
+const needle = require('needle');
+
 /**
  * Makes a single API request to retrieve the user's IP address.
  * Input:
@@ -6,22 +8,37 @@
  *   - An error, if any (nullable)
  *   - The IP address as a string (null if error). Example: "162.245.144.188"
  */
-const url = 'https://api.ipify.org?format=json';
 
-const fetchMyIP = function(callback) {
+/* const fetchMyIP = function(callback) {
+  const url = 'https://api.ipify.org?format=json';
   needle.get(url, (error, response, body) => {
-    // error can be set if invalid domain or user is offline, etc.
+    // Error in case of invalid domain user being offline, etc.
     if (error) return callback(error, null);
 
-    // when non-200 status, assume server error
-    if (response.statusCode !==200) {
-      const msg = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
+    // When non-200 status, assume server error
+    if (response.statusCode !== 200) {
+      const msg = `Status Code ${response.statusCode} when fetching IP.Response: ${body}`;
       return callback(Error(msg), null);
-    } 
+    }
+    const ip = body.ip;
+    return callback(null, ip);
+  });
+}; */
 
-      const ip = body.ip;
-      return callback(null, ip);
+const fetchCoordsByIP = function(ip, callback) {
+  const url = `http://ipwho.is/${ip}`;
+  needle.get(url, (error, response, body) => {
+    if (error) return callback(error, null);
+
+    if (!body.success) {
+      const message = `Success status was ${body.success}. Server message says: ${body.message} when fetching for IP ${body.ip}`;
+      return callback(Error(message), null);
+    }
+
+    const latitude = body.latitude;
+    const longitude = body.latitude;
+    callback(null, {latitude, longitude});
   });
 };
 
-module.exports = { fetchMyIP };
+module.exports = { fetchCoordsByIP };
