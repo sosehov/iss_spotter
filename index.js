@@ -9,10 +9,6 @@ const printPassTimes = function(passTimes) {
   }
 };
 
-let timestamp = 1736147047;
-let date = new Date(timestamp * 1000); // multiply by 1000 to convert to milliseconds
-console.log(date.toString());
-
 nextISSTimesForMyLocation((error, passTimes) => {
   if (error) {
     return console.log("It didn't work!", error);
