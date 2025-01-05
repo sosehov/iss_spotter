@@ -87,10 +87,10 @@ const fetchISSFlyOverTimes = function(coords, callback) {
     // No need for JSON.parse if body is already an object
     const parsedBody = typeof body === 'string' ? JSON.parse(body) : body;
 
-    /*if (!parsedBody.success) {
+    if (!parsedBody.success) {
       const message = `Success status was ${parsedBody.success}. Server message says: ${parsedBody.message} when fetching for IP ${parsedBody.ip}`;
       return callback(Error(message), null);
-    } */
+    }
 
     const passes = parsedBody.response;
     callback(null, passes);
